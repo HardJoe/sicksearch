@@ -1,28 +1,22 @@
-from django.shortcuts import render
-
 import os
+import re
 
-from django.conf import settings
+from django.shortcuts import render
 
 from home.bsbi import BSBIIndex
 from home.compression import VBEPostings
-from home.search import test_search
 
 
 def index(request):
     return render(request, 'index.html')
 
+
 def search(request):
     if 'q' in request.GET:
         query = request.GET['q']
         docs = get_serp(query)
-        context = {'docs': docs}
-        print(docs)
-
+        context = {'query': query, 'docs': docs}
     return render(request, 'results.html', context=context)
-    #     test_search(query)
-    # return render(request, 'results.html')
-
 
 
 def get_serp(query):
@@ -34,6 +28,7 @@ def get_serp(query):
     for doc in docs:
         with open(doc['path']) as f:
             title = f.readline()
+            title = re.sub(r'\d+. ', '', title)
             title = (title[:65] + ' ...') if len(title) > 69 else title
             doc['title'] = title
 
