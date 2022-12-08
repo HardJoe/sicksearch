@@ -18,8 +18,8 @@
 <body>
   <div class="header">
     <!-- header contents -->
-    <span class="menuItems"><a href="https://www.gmail.com" alt="gmail">Gmail</a></span>
-    <span class="menuItems"><a href="https://www.google.co.ke/imghp?hl=en&tab=wi&authuser=0&ogbl"
+    <span class="menuItems"><a href="https://mail.google.com/" alt="gmail">Gmail</a></span>
+    <span class="menuItems"><a href="https://images.google.com/"
         alt="image">Images</a></span>
     <span class="menuItems">
       <span class="menu">
@@ -28,37 +28,37 @@
       <div class="dropdown-content">
         <!-- google app logo -->
         <div class="appLogo">
-          <a href="#"> <img class="menuItemLogo" src="http://pluspng.com/img-png/google-logo-png-open-2000.png"> </a>
+          <a href="https://www.google.com/"> <img class="menuItemLogo" src="http://pluspng.com/img-png/google-logo-png-open-2000.png"> </a>
           <div class="caption" alt="search"> Search </div>
         </div>
         <!-- google map -->
         <div class="appLogo">
-          <a href="#"> <img class="menuItemLogo"
+          <a href="https://maps.google.com/"> <img class="menuItemLogo"
               src="http://pluspng.com/img-png/google-maps-png-google-maps-icon-1600.png"> </a>
           <div class="caption"> Maps </div>
         </div>
         <!-- google drive -->
         <div class="appLogo">
-          <a href="#"> <img class="menuItemLogo"
+          <a href="https://drive.google.com/"> <img class="menuItemLogo"
               src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"> </a>
           <div class="caption"> Drive </div>
         </div>
-        <!-- google calender -->
+        <!-- google calendar -->
         <div class="appLogo">
-          <a href="#"> <img class="menuItemLogo"
+          <a href="https://calendar.google.com/"> <img class="menuItemLogo"
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/768px-Google_Calendar_icon_%282020%29.svg.png">
           </a>
           <div class="caption"> Calendar </div>
         </div>
         <!-- google photo -->
         <div class="appLogo">
-          <a href="#"> <img class="menuItemLogo"
+          <a href="https://photos.google.com/"> <img class="menuItemLogo"
               src="https://blogs.acu.edu/innovation_foundry/files/2017/06/google_photos1600.png"> </a>
           <div class="caption"> Photo </div>
         </div>
         <!-- keep -->
         <div class="appLogo">
-          <a href="#"> <img class="menuItemLogo"
+          <a href="https://keep.google.com/"> <img class="menuItemLogo"
               src="https://i.pinimg.com/originals/09/96/92/099692d1d651d51b7caf3040fce0f748.png"> </a>
           <div class="caption"> Keep </div>
         </div>
@@ -71,19 +71,19 @@
   <!-- google image woth search box and buttons -->
   <div class="container" style="text-align: center;">
     <!-- <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"> -->
-    <img src="{% static 'home/images/imageedit_2_6238133910.png' %}">
+    <img src="{% static 'home/images/sicksearch-logo.png' %}">
 
     <form method="get" action="{% url 'search' %}">
       <!-- search box -->
       <div class="search">
-        <i class="fa-solid fa-magnifying-glass" style="color: grey"></i>
+        <i class="fa-solid fa-magnifying-glass" style="color: grey; margin-right: 5px;"></i>
         <input type="text" class="input" name="q" required />
         <!-- <img class="voiceSearch" src="https://www.gstatic.com/images/branding/googlemic/2x/googlemic_color_24dp.png"> -->
       </div>
       <!-- buttons -->
       <div class="btn">
         <button type="submit" class="btns">Search</button>
-        <button class="btns">I'm Feeling Sick</button>
+        <button class="btns" disabled>I'm Feeling Sick</button>
       </div>
     </form>
   </div>

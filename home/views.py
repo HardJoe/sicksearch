@@ -16,7 +16,7 @@ def index(request):
 
 def search(request):
     if not "q" in request.GET:
-        return HttpResponseBadRequest
+        return HttpResponseBadRequest("Search query required")
 
     start_time = time.time()
 
