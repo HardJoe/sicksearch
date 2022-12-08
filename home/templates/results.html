@@ -6,13 +6,12 @@
   <title>{{ query }} - Sicksearch</title>
   <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="{% static 'home/css/results.css' %}" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="icon" href="{% static 'home/images/sicksearch-icon.png' %}" sizes="16x16" type="image/png">
 </head>
 
 <body>
   <div id="header">
     <div id="topbar">
-      <!-- <img id="searchbarimage" src="images/googlelogo_color_92x30dp.png" /> -->
       <a href="{% url 'index' %}"><img id="searchbarimage" src="{% static 'home/images/sicksearch-logo.png' %}"
           alt="Google logo, logotype"></a>
       <form method="get" action="{% url 'search' %}">
