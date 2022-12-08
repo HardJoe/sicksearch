@@ -1,18 +1,18 @@
-import math
-import os
-import dill as pickle
 import contextlib
 import heapq
+import math
+import os
 import re
 
+import dill as pickle
 import nltk
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
-from home.index import InvertedIndexReader, InvertedIndexWriter
-# from util import IdMap, sorted_merge_posts_and_tfs
-from home.compression import VBEPostings
 from tqdm import tqdm
+
+from home.compression import VBEPostings
+from home.index import InvertedIndexReader, InvertedIndexWriter
 
 
 class IdMap:
@@ -410,16 +410,11 @@ class BSBIIndex:
 
 
 if __name__ == "__main__":
-
-    # for root, dirs, files in os.walk("home\\search\\collection", topdown=False):
-    #     for name in files:
-    #         print(os.path.join(root, name))
-    #     for name in dirs:
-    #         print(os.path.join(root, name))
-
     nltk.download("stopwords")
     BSBI_instance = BSBIIndex(
-        data_dir=os.path.join("home", "collection"), postings_encoding=VBEPostings, output_dir=os.path.join("home", "indices")
+        data_dir=os.path.join("home", "collection"),
+        postings_encoding=VBEPostings,
+        output_dir=os.path.join("home", "indices"),
     )
     BSBI_instance.index()  # memulai indexing!
     print("indexing selesai")

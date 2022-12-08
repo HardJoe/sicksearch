@@ -2,7 +2,7 @@ import os
 import re
 import time
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 
@@ -23,17 +23,14 @@ def search(request):
     query = request.GET["q"]
     docs = get_serp(query)
 
-    paginator = Paginator(docs, 10)  # 10 employees per page
-
+    paginator = Paginator(docs, 10)
     page_number = request.GET.get("page")
 
     try:
         page_obj = paginator.page(page_number)
     except PageNotAnInteger:
-        # if page is not an integer, deliver the first page
         page_obj = paginator.page(1)
     except EmptyPage:
-        # if the page is out of range, deliver the last page
         page_obj = paginator.page(paginator.num_pages)
 
     context = {
@@ -52,7 +49,6 @@ def get_serp(query):
     )
 
     docs = []
-
     for (_, doc) in BSBI_instance.retrieve_bm25(query, k=100):
         docs.append(
             {
@@ -60,7 +56,6 @@ def get_serp(query):
                 "id": re.search(r".*\\.*\\.*\\(.*)\.txt", doc).group(1),
             }
         )
-
     for doc in docs:
         with open(doc["path"]) as f:
             title = f.readline()
@@ -71,7 +66,6 @@ def get_serp(query):
             content = f.read()
             content = (content[:161] + " ...") if len(content) > 165 else content
             doc["content"] = content
-
     return docs
 
 
