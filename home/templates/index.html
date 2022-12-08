@@ -10,8 +10,9 @@
   <title> Sicksearch </title>
   <!-- external links -->
   <link rel="stylesheet" href="{% static 'home/css/index.css' %}">
-  <link rel="icon" href="https://www.shareicon.net/download/2015/09/26/107420_new.ico" sizes="16x16" type="image/png">
+  <!-- <link rel="icon" href="https://www.shareicon.net/download/2015/09/26/107420_new.ico" sizes="16x16" type="image/png"> -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
@@ -45,7 +46,7 @@
         <!-- google calender -->
         <div class="appLogo">
           <a href="#"> <img class="menuItemLogo"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Google-calendar.svg/1024px-Google-calendar.svg.png">
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/768px-Google_Calendar_icon_%282020%29.svg.png">
           </a>
           <div class="caption"> Calendar </div>
         </div>
@@ -75,8 +76,9 @@
     <form method="get" action="{% url 'search' %}">
       <!-- search box -->
       <div class="search">
+        <i class="fa-solid fa-magnifying-glass" style="color: grey"></i>
         <input type="text" class="input" name="q" required />
-        <img class="voiceSearch" src="https://www.gstatic.com/images/branding/googlemic/2x/googlemic_color_24dp.png">
+        <!-- <img class="voiceSearch" src="https://www.gstatic.com/images/branding/googlemic/2x/googlemic_color_24dp.png"> -->
       </div>
       <!-- buttons -->
       <div class="btn">

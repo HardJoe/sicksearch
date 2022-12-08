@@ -296,7 +296,7 @@ html, body {
 }
 
 .pagelistfirst {
-  margin-left: 20px;
+  margin-left: 10px;
   font-size: 13px;
 }
 
@@ -409,4 +409,8 @@ html, body {
 
 #footerlocation p:nth-of-type(1) {
   font-weight: bold;
+}
+
+a {
+  text-decoration: none;
 }
