@@ -20,7 +20,7 @@ RUN pip install --upgrade pip
 COPY . $DockerHOME  
 # run this command to install all dependencies  
 RUN pip install -r requirements.txt  
-RUN python -c "import nltk; nltk.download('punkt')"
+RUN python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
 # port where the Django app runs  
 EXPOSE 8000  
 # start server  

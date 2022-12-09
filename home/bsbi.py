@@ -42,7 +42,8 @@ class BSBIIndex:
         # Untuk menyimpan nama-nama file dari semua intermediate inverted index
         self.intermediate_indices = []
 
-        nltk.download('punkt')
+        nltk.download("punkt")
+        nltk.download("stopwords")
 
     def save(self):
         """Menyimpan doc_id_map and term_id_map ke output directory via pickle"""
@@ -288,7 +289,6 @@ class BSBIIndex:
 
 
 if __name__ == "__main__":
-    nltk.download("stopwords")
     BSBI_instance = BSBIIndex(
         data_dir=os.path.join("home", "collection"),
         postings_encoding=VBEPostings,
