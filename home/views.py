@@ -50,22 +50,30 @@ def get_serp(query):
 
     docs = []
     for (_, doc) in BSBI_instance.retrieve_bm25(query, k=100):
+        doc_id = re.search(r".*\\.*\\.*\\(.*)\.txt", doc).group(1)
         docs.append(
             {
                 "path": doc,
-                "id": re.search(r".*\\.*\\.*\\(.*)\.txt", doc).group(1),
+                "id": doc_id,
             }
         )
     for doc in docs:
-        with open(doc["path"]) as f:
-            title = f.readline()
-            title = re.sub(r"\d+. ", "", title)
-            title = (title[:65] + " ...") if len(title) > 69 else title
-            doc["title"] = title
+        try:
+            f = open(doc["path"])
+        except FileNotFoundError:  # Linux
+            doc["path"] = doc["path"].replace("\\", "/")
+            f = open(doc["path"])
 
-            content = f.read()
-            content = (content[:161] + " ...") if len(content) > 165 else content
-            doc["content"] = content
+        title = f.readline()
+        title = re.sub(r"\d+. ", "", title)
+        title = (title[:65] + " ...") if len(title) > 69 else title
+        doc["title"] = title
+
+        content = f.read()
+        content = (content[:161] + " ...") if len(content) > 165 else content
+        doc["content"] = content
+
+        f.close()
     return docs
 
 
