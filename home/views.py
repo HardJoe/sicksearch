@@ -3,7 +3,7 @@ import re
 import time
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render
 
 from home.bsbi import BSBIIndex
@@ -121,9 +121,18 @@ def get_content(raw_content, clean_query):
     return content
 
 def view_doc(request, pk):
-    block = int(pk) // 100 + 1
-    f = open(os.path.join("home", "collection", str(block), f"{pk}.txt"), "r")
-    file_content = f"# collection/{block}/{pk}.txt\n\n"
-    file_content += f.read()
-    f.close()
-    return HttpResponse(file_content, content_type="text/plain")
+    pk = int(pk)
+    if pk < 1 or pk > 1033:
+        return HttpResponseNotFound("Document not found")
+
+    block = pk // 100 + 1
+    path = os.path.join("home", "collection", str(block), f"{pk}.txt")
+    with open(path, "r") as f:
+        content = f.read()
+
+    context = {
+        "pk": pk,
+        "path": path,
+        "content": content,
+    }
+    return render(request, "doc.html", context=context)

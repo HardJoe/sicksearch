@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 50px 150px 0px 150px;
+}
+
+.file-view h2 {
+  font-size: 25px;
+  line-height: 25px;
+  font-weight: normal;
+  color: rgb(29, 1, 189);
+}
+
+.file-view p {
+  width: 600px;
+  font-size: 18px;
+  line-height: 30px;
+  margin-top: 0px;
+  color: rgb(82, 82, 82);
+}
