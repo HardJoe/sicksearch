@@ -8,6 +8,7 @@ from django.shortcuts import render
 
 from home.bsbi import BSBIIndex
 from home.compression import VBEPostings
+from home.util import preprocess_text
 
 
 def index(request):
@@ -23,15 +24,8 @@ def search(request):
     query = request.GET["q"]
     docs = get_serp(query)
 
-    paginator = Paginator(docs, 10)
     page_number = request.GET.get("page")
-
-    try:
-        page_obj = paginator.page(page_number)
-    except PageNotAnInteger:
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        page_obj = paginator.page(paginator.num_pages)
+    page_obj = paginate(docs, page_number)
 
     context = {
         "query": query,
@@ -39,6 +33,18 @@ def search(request):
         "page_obj": page_obj,
     }
     return render(request, "results.html", context=context)
+
+
+def paginate(objects, page_number, obj_per_page=10):
+    paginator = Paginator(objects, obj_per_page)
+
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    return page_obj
 
 
 def get_serp(query):
@@ -49,37 +55,75 @@ def get_serp(query):
     )
 
     docs = []
-    for (_, doc) in BSBI_instance.retrieve_bm25(query, k=100):
-        doc_id = re.search(r".*\\.*\\.*\\(.*)\.txt", doc).group(1)
+
+    for (_, doc_path) in BSBI_instance.retrieve_bm25(query, k=100):
+        doc_id = re.search(r".*\\.*\\.*\\(.*)\.txt", doc_path).group(1)
+
+        try:
+            f = open(doc_path)
+        except FileNotFoundError:  # Linux
+            doc_path = doc_path.replace("\\", "/")
+            f = open(doc_path)
+
+        raw_title = f.readline().strip()
+        title = get_title(raw_title)
+
+        raw_content = f.read()
+        clean_query = preprocess_text(query)
+        content = get_content(raw_content, clean_query)
+
         docs.append(
             {
-                "path": doc,
+                "path": doc_path,
                 "id": doc_id,
+                "title": title,
+                "content": content,
             }
         )
-    for doc in docs:
-        try:
-            f = open(doc["path"])
-        except FileNotFoundError:  # Linux
-            doc["path"] = doc["path"].replace("\\", "/")
-            f = open(doc["path"])
-
-        title = f.readline()
-        title = re.sub(r"\d+. ", "", title)
-        title = (title[:65] + " ...") if len(title) > 69 else title
-        doc["title"] = title
-
-        content = f.read()
-        content = (content[:161] + " ...") if len(content) > 165 else content
-        doc["content"] = content
 
         f.close()
     return docs
 
 
+def get_title(raw_title):
+    title = re.sub(r"\d+. ", "", raw_title)  # clean numbers at page entry
+    title = (title[:65]) if len(title) > 69 else title
+    if title[-1] != ".":
+        title += " ..."
+    else:
+        title = title[:-1]
+    return title
+
+
+def get_content(raw_content, clean_query):
+    content = []
+
+    sentences = re.findall(r"([^.]*\.)", raw_content)
+    for sentence in sentences:
+        if all(word in sentence for word in clean_query):
+            content.append(sentence)
+
+    if not content:
+        for q in clean_query:
+            try:
+                match = re.findall(r"([^.]*?" + q + "[^.]*\.)", raw_content)[0]
+                content.append(match)
+            except IndexError:
+                continue
+
+    if content:
+        content = " ... ".join(content)
+        for q in clean_query:
+            content = content.replace(q, "<b>" + q + "</b>")
+        content = "<p>" + content + "</p>"
+    else:
+        content = ""
+    return content
+
 def view_doc(request, pk):
     block = int(pk) // 100 + 1
     f = open(os.path.join("home", "collection", str(block), f"{pk}.txt"), "r")
-    file_content = f.read()
+    file_content = f"# collection/{block}/{pk}.txt\n\n"
+    file_content += f.read()
     f.close()
     return HttpResponse(file_content, content_type="text/plain")

@@ -1,4 +1,9 @@
 import math
+import re
+
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
 
 
 class IdMap:
@@ -72,6 +77,16 @@ class IdMap:
             raise TypeError
 
 
+class Weighting:
+    @staticmethod
+    def get_idf_weight(total_docs, term_df):
+        return math.log10(total_docs / term_df)
+
+    @staticmethod
+    def get_bm25_tf_weight(k1, b, doc_tf, dl, avdl):
+        return ((k1 + 1) * doc_tf) / (k1 * (1 - b + b * dl / avdl) + doc_tf)
+
+
 def sorted_merge_posts_and_tfs(posts_tfs1, posts_tfs2):
     """
     Menggabung (merge) dua lists of tuples (doc id, tf) dan mengembalikan
@@ -115,11 +130,23 @@ def sorted_merge_posts_and_tfs(posts_tfs1, posts_tfs2):
     return res
 
 
-class Weighting:
-    @staticmethod
-    def get_idf_weight(total_docs, term_df):
-        return math.log10(total_docs / term_df)
+def preprocess_text(text):
+    """
+    Digunakan sebelum memproses query saat retrieval dan document saat
+    indexing.
+    """
+    # TODO
+    text = text.lower()
+    text = re.sub("\s+", " ", text)  # Remove excess whitespace
+    text = re.sub("[^\w\s]", " ", text)  # Remove punctuations
+    text = re.sub(r"\d+", "", text)  # Remove numbers
 
-    @staticmethod
-    def get_bm25_tf_weight(k1, b, doc_tf, dl, avdl):
-        return ((k1 + 1) * doc_tf) / (k1 * (1 - b + b * dl / avdl) + doc_tf)
+    text = word_tokenize(text)
+
+    stops = set(stopwords.words("english"))
+    text = [word for word in text if word not in stops]
+
+    stemmer = SnowballStemmer("english")
+    text = [stemmer.stem(word) for word in text]
+
+    return text

@@ -16,7 +16,7 @@
           alt="Google logo, logotype"></a>
       <form method="get" action="{% url 'search' %}">
         <div id="searchbar" type="text">
-          <input id="searchbartext" type="text" name="q" required />
+          <input id="searchbartext" type="text" name="q" value="{{ query }}" required />
           <button id="searchbarbutton">
             <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -54,7 +54,7 @@
         <h2>{{ doc.title }}</h2>
       </a>
       <a>{{ doc.path }}</a> <button>▼</button>
-      <p>{{ doc.content }}</p>
+      {{ doc.content|safe }}
     </div>
     {% endfor %}
 
@@ -69,20 +69,25 @@
     <div class="pagebar">
       <ul class="pagelist">
         {% if page_obj.has_previous %}
-        <li class="pagelistprevious"><a
-            href="/search?q={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a></li>
+        <a href="/search?q={{ query }}&page={{ page_obj.previous_page_number }}">
+          <li class="pagelistprevious">Previous</li>
+        </a>
         {% else %}
         <a>Previous</a>
         {% endif %}
         {% for i in page_obj.paginator.page_range %}
         {% if page_obj.number == i %}
-        <li class="pagelistfirst"><a href="#">{{ i }}</a></li>
+        <li class="pagelistfirst">{{ i }}</li>
         {% else %}
-        <li class="pagelistnumber"><a href="/search?q={{ query }}&page={{ i }}">{{ i }}</a></li>
+        <a href="/search?q={{ query }}&page={{ i }}">
+          <li class="pagelistnumber">{{ i }}</li>
+        </a>
         {% endif %}
         {% endfor %}
         {% if page_obj.has_next %}
-        <li class="pagelistnext"><a href="/search?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a></li>
+        <a href="/search?q={{ query }}&page={{ page_obj.next_page_number }}">
+          <li class="pagelistnext">Next</li>
+        </a>
         {% else %}
         <a>Next</a>
         {% endif %}

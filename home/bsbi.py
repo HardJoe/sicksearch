@@ -1,18 +1,14 @@
 import contextlib
 import heapq
 import os
-import re
 
 import dill as pickle
 import nltk
-from nltk import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer
 from tqdm import tqdm
 
 from home.compression import VBEPostings
 from home.index import InvertedIndexReader, InvertedIndexWriter
-from home.util import IdMap, sorted_merge_posts_and_tfs, Weighting
+from home.util import IdMap, Weighting, preprocess_text, sorted_merge_posts_and_tfs 
 
 
 class BSBIIndex:
@@ -61,27 +57,6 @@ class BSBIIndex:
         with open(os.path.join(self.output_dir, "docs.dict"), "rb") as f:
             self.doc_id_map = pickle.load(f)
 
-    def preprocess_text(self, text):
-        """
-        Digunakan sebelum memproses query saat retrieval dan document saat
-        indexing.
-        """
-        # TODO
-        text = text.lower()
-        text = re.sub("\s+", " ", text)  # Remove excess whitespace
-        text = re.sub("[^\w\s]", " ", text)  # Remove punctuations
-        text = re.sub(r"\d+", "", text)  # Remove numbers
-
-        text = word_tokenize(text)
-
-        stops = set(stopwords.words("english"))
-        text = [word for word in text if word not in stops]
-
-        stemmer = SnowballStemmer("english")
-        text = [stemmer.stem(word) for word in text]
-
-        return text
-
     def parse_block(self, block_dir_relative):
         """
         Lakukan parsing terhadap text file sehingga menjadi sequence of
@@ -123,7 +98,7 @@ class BSBIIndex:
             doc_id = self.doc_id_map[doc_path]
 
             with open(doc_path) as f:
-                terms = self.preprocess_text(f.read())
+                terms = preprocess_text(f.read())
                 for term in terms:
                     term_id = self.term_id_map[term]
                     td_pairs.append((term_id, doc_id))
@@ -218,7 +193,7 @@ class BSBIIndex:
         if len(self.term_id_map) == 0 or len(self.doc_id_map) == 0:
             self.load()
 
-        terms = self.preprocess_text(query)
+        terms = preprocess_text(query)
         if not terms:
             return []
 
