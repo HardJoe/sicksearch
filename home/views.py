@@ -98,11 +98,13 @@ def get_title(raw_title):
 def get_content(raw_content, clean_query):
     content = []
 
+    # find all sentences containing ALL query words
     sentences = re.findall(r"([^.]*\.)", raw_content)
     for sentence in sentences:
         if all(word in sentence for word in clean_query):
             content.append(sentence)
 
+    # else, for each query word, find a sentence containing the word
     if not content:
         for q in clean_query:
             try:
@@ -111,13 +113,15 @@ def get_content(raw_content, clean_query):
             except IndexError:
                 continue
 
-    if content:
-        content = " ... ".join(content)
-        for q in clean_query:
-            content = content.replace(q, "<b>" + q + "</b>")
-        content = "<p>" + content + "</p>"
-    else:
-        content = ""
+    # else, get the first 165 letters of the content
+    if not content:
+        text = (raw_content[:161] + " ...") if len(raw_content) > 165 else raw_content
+        content.append(text)
+
+    content = " ... ".join(content)
+    for q in clean_query:
+        content = content.replace(q, "<b>" + q + "</b>")
+    content = "<p>" + content + "</p>"
     return content
 
 def view_doc(request, pk):
