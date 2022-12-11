@@ -137,6 +137,7 @@ def view_doc(request, pk):
     context = {
         "pk": pk,
         "path": path,
+        "block": block,
         "content": content,
     }
     return render(request, "doc.html", context=context)

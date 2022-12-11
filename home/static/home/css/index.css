@@ -141,6 +141,5 @@ input[type="text"] {
 }
 
 .btns:hover {
-  border: 1.5px solid lightslategray;
-  color: black;
+  border: 1.5px solid #c2c0be;
 }
